@@ -1,9 +1,1 @@
-log files
-*.log
-environment file
-.env
-logs folder
-logs/
-text file
-notes.txt
-
+*.class
