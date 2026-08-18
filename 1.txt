@@ -8,4 +8,4 @@ webhook automatic test
 Pipeline test 
 Jenkins SCM
 webhook+jenkins
-test1 webhook pipeline
+test2 webhook pipeline
