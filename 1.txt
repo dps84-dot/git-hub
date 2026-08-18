@@ -5,4 +5,5 @@ Poll SCM set hai.
 webhook practical hai
 edit webhook
 webhook automatic test
-Pipeline test
+Pipeline test 
+Jenkins SCM
