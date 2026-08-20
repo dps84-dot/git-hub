@@ -3,35 +3,30 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/dps84-dot/git-hub.git'
-            }
-        }
-
-        stage('Files') {
-            steps {
-                sh '''
-                    echo "Files downloaded from GitHub:"
-                    ls -la
-                '''
-            }
-        }
-
-        stage('Git Commit') {
-            steps {
-                sh '''
-                    echo "Latest Git commit:"
-                    git log -1 --oneline
-                '''
+                echo 'Build stage is running'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing application...'
+                echo 'Test stage is running'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+        }
+
+        always {
+            echo 'Pipeline execution finished.'
         }
     }
 }
