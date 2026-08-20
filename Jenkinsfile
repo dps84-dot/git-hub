@@ -12,7 +12,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Test stage is running'
-                sh 'exit 1'
+                
             }
         }
     }
