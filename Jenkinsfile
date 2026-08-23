@@ -9,23 +9,25 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Test with Try Catch') {
             steps {
-                catchError(
-                    buildResult: 'SUCCESS',
-                    stageResult: 'FAILURE'
-                ) {
-                    echo 'Test is running...'
+                script {
+                    try {
+                        echo 'Test is running...'
 
-                    // Intentionally failing command
-                    sh 'exit 1'
+                        // Intentionally failing command
+                        sh 'exit 1'
+
+                    } catch (err) {
+                        echo "Test failed, but error was handled."
+                    }
                 }
             }
         }
 
         stage('Next Stage') {
             steps {
-                echo 'Pipeline continued after error handling'
+                echo 'Pipeline continued after error handling.'
             }
         }
     }
