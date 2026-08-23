@@ -5,27 +5,32 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Build stage is running'
+                echo 'Build is running...'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Test stage is running'
-                
+                catchError(
+                    buildResult: 'SUCCESS',
+                    stageResult: 'FAILURE'
+                ) {
+                    echo 'Test is running...'
+
+                    // Intentionally failing command
+                    sh 'exit 1'
+                }
+            }
+        }
+
+        stage('Next Stage') {
+            steps {
+                echo 'Pipeline continued after error handling'
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'Pipeline failed!'
-        }
-
         always {
             echo 'Pipeline execution finished.'
         }
