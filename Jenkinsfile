@@ -3,33 +3,31 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Create File') {
             steps {
-                echo 'Build is running...'
+                sh '''
+                    echo "Jenkins Artifact Practical" > report.txt
+                    echo "Build completed successfully" >> report.txt
+                    echo "This file is created by Jenkins" >> report.txt
+                '''
             }
         }
 
-        stage('Retry Test') {
+        stage('Archive Artifact') {
             steps {
-                retry(3) {
-                    echo 'Trying the operation...'
-
-                    // Failure intentionally create kar rahe hain
-                    sh 'exit 1'
-                }
+                archiveArtifacts artifacts: 'report.txt', fingerprint: true
             }
         }
 
-        stage('Next Stage') {
-            steps {
-                echo 'Next stage is running...'
-            }
-        }
     }
 
     post {
-        always {
-            echo 'Pipeline execution finished.'
+        success {
+            echo 'Artifact archived successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
