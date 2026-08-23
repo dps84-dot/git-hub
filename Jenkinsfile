@@ -9,15 +9,20 @@ pipeline {
             }
         }
 
-        stage('Timeout Test') {
-            options {
-                timeout(time: 10, unit: 'SECONDS')
-            }
-
+        stage('Retry Test') {
             steps {
-                echo 'Starting long-running task...'
-                sleep 20
-                echo 'Task completed.'
+                retry(3) {
+                    echo 'Trying the operation...'
+
+                    // Failure intentionally create kar rahe hain
+                    sh 'exit 1'
+                }
+            }
+        }
+
+        stage('Next Stage') {
+            steps {
+                echo 'Next stage is running...'
             }
         }
     }
