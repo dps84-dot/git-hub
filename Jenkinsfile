@@ -9,25 +9,15 @@ pipeline {
             }
         }
 
-        stage('Test with Try Catch') {
-            steps {
-                script {
-                    try {
-                        echo 'Test is running...'
-
-                        // Intentionally failing command
-                        sh 'exit 1'
-
-                    } catch (err) {
-                        echo "Test failed, but error was handled."
-                    }
-                }
+        stage('Timeout Test') {
+            options {
+                timeout(time: 10, unit: 'SECONDS')
             }
-        }
 
-        stage('Next Stage') {
             steps {
-                echo 'Pipeline continued after error handling.'
+                echo 'Starting long-running task...'
+                sleep 20
+                echo 'Task completed.'
             }
         }
     }
