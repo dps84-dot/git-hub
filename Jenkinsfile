@@ -1,83 +1,67 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(
-            name: 'ENVIRONMENT',
-            choices: ['dev', 'test', 'prod'],
-            description: 'Select deployment environment'
-        )
-    }
-
-    environment {
-        APP_NAME = 'my-app'
-    }
-
     stages {
 
         stage('Build') {
             steps {
-                echo "Building ${APP_NAME}"
-                sh 'echo "Build completed" > build.txt'
+                echo 'Build started'
+
+                script {
+                    try {
+                        retry(2) {
+                            sh 'echo "Build command running..."'
+                        }
+                    } catch (err) {
+                        echo 'Build failed, but pipeline is handling the error.'
+                    }
+                }
             }
         }
 
-        stage('Parallel Test') {
+        stage('Parallel Testing') {
             parallel {
 
                 stage('Unit Test') {
                     steps {
-                        echo 'Running Unit Tests...'
-                        sh 'sleep 3'
-                        echo 'Unit Tests Passed'
+                        echo 'Unit tests running...'
                     }
                 }
 
-                stage('Code Check') {
+                stage('Security Test') {
                     steps {
-                        echo 'Running Code Check...'
-                        sh 'sleep 3'
-                        echo 'Code Check Passed'
+                        echo 'Security tests running...'
                     }
                 }
             }
         }
 
-        stage('Archive') {
+        stage('Create Artifact') {
             steps {
-                archiveArtifacts artifacts: 'build.txt', fingerprint: true
+                sh '''
+                    echo "Jenkins Practical 21" > report.txt
+                    echo "Build completed successfully" >> report.txt
+                '''
+
+                archiveArtifacts artifacts: 'report.txt',
+                                  fingerprint: true
             }
         }
 
         stage('Approval') {
-            when {
-                expression {
-                    params.ENVIRONMENT == 'prod'
-                }
-            }
-
             steps {
                 input message: 'Deploy to Production?', ok: 'Proceed'
             }
         }
 
         stage('Deploy') {
-            when {
-                expression {
-                    params.ENVIRONMENT == 'dev' ||
-                    params.ENVIRONMENT == 'test' ||
-                    params.ENVIRONMENT == 'prod'
-                }
-            }
-
             steps {
-                echo "Deploying ${APP_NAME} to ${params.ENVIRONMENT}"
+                echo 'Deploying application to Production...'
             }
         }
     }
 
     post {
-
         success {
             echo 'Pipeline completed successfully!'
         }
